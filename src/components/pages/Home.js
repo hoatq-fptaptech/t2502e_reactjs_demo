@@ -1,20 +1,55 @@
 import { Col, Container, Row } from "react-bootstrap";
 import Product from "../shared/product";
+import { useEffect, useState } from "react";
+import axios_instance from "../../util/axios_instance";
 
 const Home = ()=>{
+    const [featuredProducts,setFeaturedProducts] = useState([]);
+    const [latestProducts,setLatestProducts] = useState([]);
+    // get data featured product
+    const get_featured =  async ()=>{
+        const url = "/featured_product.php"
+        const rs = await axios_instance.get(url);
+        const data = rs.data.data;
+        setFeaturedProducts(data);
+    }
+    // get data latest product
+    const get_latest =  async ()=>{
+        const url = "/latest_product.php"
+        const rs = await axios_instance.get(url);
+        const data = rs.data.data;
+        setLatestProducts(data);
+    }
+    useEffect(()=>{
+        get_featured();
+        get_latest();
+    },[]);
     return (
         <Container>
             <h2>Featured Products</h2>
             <Row>
-                <Col xs={3}>
-                    <Product/>
-                </Col>
+            {
+                featuredProducts.map((e,k)=>{
+                    return (
+                        <Col xs={3}  key={k}>
+                            <Product product={e}/>
+                        </Col>
+                    )
+                })
+            }
+              
             </Row>
             <h2>Latest Products</h2>
             <Row>
-                <Col xs={3}>
-                    <Product/>
-                </Col>
+                {
+                latestProducts.map((e,k)=>{
+                    return (
+                        <Col xs={3}  key={k}>
+                            <Product product={e}/>
+                        </Col>
+                    )
+                })
+            }
             </Row>
         </Container>
     );
