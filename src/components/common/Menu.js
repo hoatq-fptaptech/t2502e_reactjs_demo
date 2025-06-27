@@ -4,11 +4,12 @@ import axios_instance from "../../util/axios_instance";
 import UserContext from "../../context/context";
 import { useContext } from "react";
 import { Badge } from "react-bootstrap";
+import URL from "../../util/url";
 const Menu = ()=>{
     const {state,dispatch} = useContext(UserContext);
     const [categories,setCategories] = useState([]);
     const get_menu = async ()=>{
-        const url = "/categories.php";
+        const url = URL.CATEGORY_LIST;
         const rs = await axios_instance.get(url);
         setCategories(rs.data.data);
     }

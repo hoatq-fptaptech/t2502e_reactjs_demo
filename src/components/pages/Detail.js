@@ -4,12 +4,13 @@ import axios_instance from './../../util/axios_instance';
 import { Col, Container, Row } from "react-bootstrap";
 import UserContext from "../../context/context";
 import { type } from "@testing-library/user-event/dist/type";
+import URL from "../../util/url";
 const Detail = ()=>{
     const {id} = useParams();
     const [product,setProduct] = useState({});
     const [buyQty,setBuyQty] = useState(1);
     const get_detail = async ()=>{
-        const url = "/detail_product.php?id="+id;
+        const url = URL.DETAIL_PRODUCT+id;
         const rs = await axios_instance.get(url);
         const data = rs.data.data;
         setProduct(data);
@@ -26,8 +27,17 @@ const Detail = ()=>{
     const add_to_cart = ()=>{
         product.buyQty = buyQty; // set số lượng cần mua vào chính sản phẩm
         const cart = state.cart;
-        cart.push(product);
-
+        let check = true;
+        cart.map(e => {
+            if(e.id == product.id){
+                e.buyQty = e.buyQty + buyQty;
+                check = false;
+            }
+            return e;
+        });
+        if(check){
+            cart.push(product);
+        }
         dispatch(
             {
                 type: "UPDATE_CART",
