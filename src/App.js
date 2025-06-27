@@ -14,7 +14,13 @@ import reducer from './context/reducer';
 import { UserProvider } from './context/context';
 
 function App() {
-  const [state,dispatch] = useReducer(reducer,STATE);
+  let storage = localStorage.getItem("state");
+  if(storage!= null){
+    storage = JSON.parse(storage);
+  }else{
+    storage = STATE;
+  }
+  const [state,dispatch] = useReducer(reducer,storage);
   return (
     <UserProvider value={{state,dispatch}}>
       <div className="App">
