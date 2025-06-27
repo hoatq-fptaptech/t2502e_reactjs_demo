@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios_instance from "../../util/axios_instance";
-
+import UserContext from "../../context/context";
+import { useContext } from "react";
+import { Badge } from "react-bootstrap";
 const Menu = ()=>{
+    const {state,dispatch} = useContext(UserContext);
     const [categories,setCategories] = useState([]);
     const get_menu = async ()=>{
         const url = "/categories.php";
@@ -32,7 +35,9 @@ const Menu = ()=>{
                     })
                    }
                    
-                    
+                   <li className="nav-item">
+                    <Link className="nav-link" to={"/cart"}>Cart <Badge bg="secondary">{state.cart.length}</Badge></Link>
+                    </li> 
                 </ul>
                 <form className="d-flex" role="search">
                     <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
