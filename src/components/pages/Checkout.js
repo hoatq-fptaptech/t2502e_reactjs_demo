@@ -7,6 +7,11 @@ import axios_instance from "../../util/axios_instance";
 import URL from "../../util/url";
 
 const Checkout = ()=>{
+    const options = {
+        clientId: "AZFEOYBfFE-wy0qQI2cwemlCTeSwUM0PoadhQ23nJbHoFSxQQzW7w3OsHROlaS9nnYOg87jDxBVilTht",
+        currency: "USD",
+        intent: "capture",
+    }
     const {state,dispatch} = useContext(UserContext);
     const [order,setOrder] = useState({
         id:null,
@@ -85,7 +90,7 @@ const Checkout = ()=>{
                         <tfoot>
                             <tr>
                                 <td className="text-end" colSpan={6}>
-                                    <PayPalScriptProvider options={{ clientId: "test" }}>
+                                    <PayPalScriptProvider options={options}>
                                         <PayPalButtons createOrder={create_order}
                                             onApprove={on_approve}
                                          style={{ layout: "horizontal" }} />
