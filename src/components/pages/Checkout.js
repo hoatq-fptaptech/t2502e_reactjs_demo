@@ -1,10 +1,40 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import UserContext from "../../context/context";
 import { Col, Container, Form, Row, Table } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import axios_instance from "../../util/axios_instance";
+import URL from "../../util/url";
 
 const Checkout = ()=>{
     const {state,dispatch} = useContext(UserContext);
+    const [order,setOrder] = useState({
+        id:null,
+        name:"",
+        telephone:"",
+        address:"",
+        cart:state.cart
+    });
+    const create_order = async()=>{
+        // call api create order
+        const rs = await axios_instance.post(URL.CREATE_ORDER,  order);
+        const id = rs.data.data;
+        setOrder({...order,id: id});
+    }
+    const on_approve = async ()=>{
+        const rs = await axios_instance.post(URL.UPDATE_ORDER,{id:order.id});
+        if(rs.data.status){
+            alert("Thanh toán thành công!");
+        }
+    }
+    const inputHanle = (e)=>{
+       setOrder({...order,[e.target.name]:e.target.value});
+    //    let k = e.target.name;
+    //    let v = e.target.value;
+    //    let o = order;
+    //    o[k] = v;
+    //    setOrder(o);
+    }
     return (
         <Container className="text-start">
             <Row>
@@ -12,15 +42,15 @@ const Checkout = ()=>{
                     <h2>Customer infomation</h2>
                     <div className="mb-3">
                         <label for="exampleInputEmail1"  className="form-label">Name</label>
-                        <input type="text" name="name" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                        <input type="text" name="name" value={order.name} onChange={inputHanle} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                     </div>
                     <div className="mb-3">
                         <label  className="form-label">Telephone</label>
-                        <input type="tel" name="telephone" className="form-control"/>
+                        <input type="tel" name="telephone" value={order.telephone} onChange={inputHanle} className="form-control"/>
                     </div>
                     <div className="mb-3">
                         <label  className="form-label">Address</label>
-                        <textarea name="address" className="form-control"></textarea>
+                        <textarea name="address"  value={order.address} onChange={inputHanle} className="form-control"></textarea>
                     </div>
                 </Col>
                 <Col>
@@ -55,7 +85,11 @@ const Checkout = ()=>{
                         <tfoot>
                             <tr>
                                 <td className="text-end" colSpan={6}>
-                                    <Link to={"/checkout"} className="btn btn-primary">Checkout</Link>
+                                    <PayPalScriptProvider options={{ clientId: "test" }}>
+                                        <PayPalButtons createOrder={create_order}
+                                            onApprove={on_approve}
+                                         style={{ layout: "horizontal" }} />
+                                    </PayPalScriptProvider>
                                 </td>
                             </tr>
                         </tfoot>
