@@ -36,10 +36,10 @@ const Checkout = ()=>{
         });        
     }
     const on_approve = async (data, actions)=>{
-        const rs = await axios_instance.post(URL.UPDATE_ORDER,{id:order.id});
+        const rs = await axios_instance.get(URL.UPDATE_ORDER,{params:{order_id:order.id}});
         return actions.order.capture().then(function (details) {
                     // details.id should contain the order ID
-                    console.log('Transaction completed by ' + details.payer.name.given_name);
+                    dispatch({type:"UPDATE_CART",payload:[]});
                     // Handle successful capture, e.g., update your database
                 });
     }
