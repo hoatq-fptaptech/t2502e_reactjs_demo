@@ -6,8 +6,8 @@ const URL = {
     FEATURED_PRODUCT: "/featured_product.php",
     CATEGORY_LIST: "/categories.php",
     SEARCH: "....",
-    CREATE_ORDER:".....",
-    UPDATE_ORDER:"......",
+    CREATE_ORDER:"/create_order.php",
+    UPDATE_ORDER:"/update_order.php",
     DETAIL_ORDER:"......"
 }
 export default URL;

@@ -20,17 +20,28 @@ const Checkout = ()=>{
         address:"",
         cart:state.cart
     });
-    const create_order = async()=>{
+    const create_order = async (value,actions)=>{
         // call api create order
-        const rs = await axios_instance.post(URL.CREATE_ORDER,  order);
-        const id = rs.data.data;
-        setOrder({...order,id: id});
+        const rs = await axios_instance.post(URL.CREATE_ORDER,  {order:order});
+        const data = rs.data.data; // order_id. grand_total
+        setOrder({...order,id: data.order_id,
+                        grand_total:data.grand_total});
+        
+        return actions.order.create({
+            purchase_units: [{
+                amount: {
+                    value: data.grand_total
+                }
+            }]
+        });        
     }
-    const on_approve = async ()=>{
+    const on_approve = async (data, actions)=>{
         const rs = await axios_instance.post(URL.UPDATE_ORDER,{id:order.id});
-        if(rs.data.status){
-            alert("Thanh toán thành công!");
-        }
+        return actions.order.capture().then(function (details) {
+                    // details.id should contain the order ID
+                    console.log('Transaction completed by ' + details.payer.name.given_name);
+                    // Handle successful capture, e.g., update your database
+                });
     }
     const inputHanle = (e)=>{
        setOrder({...order,[e.target.name]:e.target.value});
